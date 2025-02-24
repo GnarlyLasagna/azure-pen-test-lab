@@ -1,3 +1,4 @@
+# Declare the azure_credentials input variable
 variable "azure_credentials" {
   description = "Azure credentials in JSON format"
   type        = string
@@ -6,13 +7,15 @@ variable "azure_credentials" {
 
 # Configure the Azure provider
 provider "azurerm" {
-  features = {}
-
-  # Decode the JSON string to get individual properties
   client_id       = jsondecode(var.azure_credentials)["clientId"]
   client_secret   = jsondecode(var.azure_credentials)["clientSecret"]
   subscription_id = jsondecode(var.azure_credentials)["subscriptionId"]
   tenant_id       = jsondecode(var.azure_credentials)["tenantId"]
+}
+
+# Configure the Azure features
+provider "azurerm" {
+  features {}
 }
 
 # Define the resource group
@@ -57,7 +60,7 @@ resource "azurerm_linux_virtual_machine" "example" {
   resource_group_name = azurerm_resource_group.example.name
   size                = "Standard_B1s"
   admin_username      = "adminuser"
-  admin_password      = "password1234!"
+  admin_password      = "password1234!" 
 
   network_interface_ids = [
     azurerm_network_interface.example.id,
@@ -79,11 +82,5 @@ resource "azurerm_linux_virtual_machine" "example" {
 # Outputs
 output "vm_public_ip" {
   value = azurerm_linux_virtual_machine.example.public_ip_address
-}
-
-# Debugging output for credentials (optional)
-output "decoded_azure_credentials" {
-  value = jsondecode(var.azure_credentials)
-  sensitive = true
 }
 
