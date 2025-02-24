@@ -1,4 +1,3 @@
-# Declare the azure_credentials input variable
 variable "azure_credentials" {
   description = "Azure credentials in JSON format"
   type        = string
