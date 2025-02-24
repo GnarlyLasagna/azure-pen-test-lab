@@ -22,7 +22,7 @@ jobs:
         with:
           terraform_version: "1.5.0"
 
-      # Cache Terraform providers and plugins to speed up initialization
+      # Cache Terraform providers
       - name: Cache Terraform providers
         uses: actions/cache@v3
         with:
@@ -41,11 +41,13 @@ jobs:
           export TF_LOG=DEBUG
           terraform plan -out=tfplan
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}  # Add this line for secret
+          TF_VAR_azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}  # Map secret to the variable
 
       # Run Terraform Apply
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}  # Add this line for secret
+          TF_VAR_azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}  # Map secret to the variable
 
