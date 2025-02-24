@@ -49,7 +49,10 @@ resource "azurerm_linux_virtual_machine" "example" {
   resource_group_name = azurerm_resource_group.example.name
   size                = "Standard_B1s"
   admin_username      = "adminuser"
-  admin_password      = "password1234!" # For better security, use an SSH key or Azure Key Vault for sensitive data
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = file("~/.ssh/id_rsa.pub")  # Consider using SSH keys instead of passwords
+  }
 
   network_interface_ids = [
     azurerm_network_interface.example.id,
@@ -60,7 +63,13 @@ resource "azurerm_linux_virtual_machine" "example" {
     storage_account_type = "Standard_LRS"
   }
 
-  source_image_id = "/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Compute/images/{image_name}"
+  # Use a predefined image from Azure
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
 }
 
 # Outputs
