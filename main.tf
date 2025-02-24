@@ -50,6 +50,13 @@ resource "azurerm_network_interface" "example" {
   }
 }
 
+# Create an SSH key for authentication
+resource "azurerm_ssh_key" "example" {
+  name                = "example-ssh-key"
+  public_key          = file("~/.ssh/id_rsa.pub") # path to your SSH public key
+  resource_group_name = azurerm_resource_group.example.name
+}
+
 # Define the virtual machine
 resource "azurerm_linux_virtual_machine" "example" {
   name                = "example-vm"
@@ -57,7 +64,11 @@ resource "azurerm_linux_virtual_machine" "example" {
   resource_group_name = azurerm_resource_group.example.name
   size                = "Standard_B1s"
   admin_username      = "adminuser"
-  admin_password      = "password1234!" 
+  disable_password_authentication = true
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = azurerm_ssh_key.example.public_key
+  }
 
   network_interface_ids = [
     azurerm_network_interface.example.id,
