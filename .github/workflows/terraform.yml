@@ -25,15 +25,15 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
-    # Run Terraform Plan
+    # Run Terraform Plan with parallelism
     - name: Terraform Plan
-      run: terraform plan -out=tfplan
+      run: terraform plan -out=tfplan -parallelism=10
       env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }} 
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
-    # Run Terraform Apply
+    # Run Terraform Apply with parallelism
     - name: Terraform Apply
-      run: terraform apply -auto-approve tfplan
+      run: terraform apply -auto-approve tfplan -parallelism=10
       env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}  
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
