@@ -5,16 +5,13 @@ variable "azure_credentials" {
   sensitive   = true
 }
 
-# Configure the Azure provider
+# Configure the Azure provider with features
 provider "azurerm" {
   client_id       = jsondecode(var.azure_credentials)["clientId"]
   client_secret   = jsondecode(var.azure_credentials)["clientSecret"]
   subscription_id = jsondecode(var.azure_credentials)["subscriptionId"]
   tenant_id       = jsondecode(var.azure_credentials)["tenantId"]
-}
-
-# Configure the Azure features
-provider "azurerm" {
+  
   features {}
 }
 
