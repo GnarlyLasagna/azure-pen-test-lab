@@ -37,7 +37,9 @@ jobs:
 
       # Run Terraform Plan with parallelism to speed up resource creation
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -parallelism=5
+        run: |
+          export TF_LOG=DEBUG
+          terraform plan -out=tfplan
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }} 
 
