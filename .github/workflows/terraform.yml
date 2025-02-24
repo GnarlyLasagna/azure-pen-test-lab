@@ -19,6 +19,8 @@ jobs:
       # Set up Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: "1.5.0"        
 
       # Cache Terraform providers and plugins to speed up initialization
       - name: Cache Terraform providers
@@ -35,7 +37,7 @@ jobs:
 
       # Run Terraform Plan with parallelism to speed up resource creation
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -parallelism=10
+        run: terraform plan -out=tfplan -parallelism=5
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }} 
 
