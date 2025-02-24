@@ -1,6 +1,15 @@
+# Declare the azure_credentials input variable
+variable "azure_credentials" {
+  description = "Azure credentials in JSON format"
+  type        = string
+  sensitive   = true
+}
+
 # Configure the Azure provider
 provider "azurerm" {
   features = {}
+
+  # Decode the JSON string to get individual properties
   client_id       = jsondecode(var.azure_credentials)["clientId"]
   client_secret   = jsondecode(var.azure_credentials)["clientSecret"]
   subscription_id = jsondecode(var.azure_credentials)["subscriptionId"]
@@ -49,10 +58,7 @@ resource "azurerm_linux_virtual_machine" "example" {
   resource_group_name = azurerm_resource_group.example.name
   size                = "Standard_B1s"
   admin_username      = "adminuser"
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")  # Consider using SSH keys instead of passwords
-  }
+  admin_password      = "password1234!" 
 
   network_interface_ids = [
     azurerm_network_interface.example.id,
@@ -63,11 +69,10 @@ resource "azurerm_linux_virtual_machine" "example" {
     storage_account_type = "Standard_LRS"
   }
 
-  # Use a predefined image from Azure
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
+    sku       = "20.04-LTS"
     version   = "latest"
   }
 }
