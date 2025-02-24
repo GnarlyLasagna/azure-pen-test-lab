@@ -20,7 +20,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: "1.5.0"        
+          terraform_version: "1.5.0"
 
       # Cache Terraform providers and plugins to speed up initialization
       - name: Cache Terraform providers
@@ -41,11 +41,11 @@ jobs:
           export TF_LOG=DEBUG
           terraform plan -out=tfplan
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }} 
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Run Terraform Apply
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }} 
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 

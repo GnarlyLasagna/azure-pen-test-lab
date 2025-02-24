@@ -58,7 +58,7 @@ resource "azurerm_linux_virtual_machine" "example" {
   resource_group_name = azurerm_resource_group.example.name
   size                = "Standard_B1s"
   admin_username      = "adminuser"
-  admin_password      = "password1234!" 
+  admin_password      = "password1234!"
 
   network_interface_ids = [
     azurerm_network_interface.example.id,
@@ -80,5 +80,11 @@ resource "azurerm_linux_virtual_machine" "example" {
 # Outputs
 output "vm_public_ip" {
   value = azurerm_linux_virtual_machine.example.public_ip_address
+}
+
+# Debugging output for credentials (optional)
+output "decoded_azure_credentials" {
+  value = jsondecode(var.azure_credentials)
+  sensitive = true
 }
 
