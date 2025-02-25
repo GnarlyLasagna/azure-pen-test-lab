@@ -5,6 +5,12 @@ variable "azure_credentials" {
   sensitive   = true
 }
 
+# Declare SSH Public Key variable
+variable "ssh_public_key" {
+  description = "Public SSH Key for VM login"
+  type        = string
+}
+
 # Configure the Azure provider with features
 provider "azurerm" {
   client_id       = jsondecode(var.azure_credentials)["clientId"]
@@ -37,6 +43,14 @@ resource "azurerm_subnet" "example" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
+# Define the public IP
+resource "azurerm_public_ip" "example" {
+  name                = "example-public-ip"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  allocation_method   = "Dynamic"
+}
+
 # Define the network interface
 resource "azurerm_network_interface" "example" {
   name                = "example-nic"
@@ -45,16 +59,10 @@ resource "azurerm_network_interface" "example" {
 
   ip_configuration {
     name                          = "example-ip-config"
-    subnet_id                    = azurerm_subnet.example.id
+    subnet_id                     = azurerm_subnet.example.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.example.id  # Attach Public IP
   }
-}
-
-# Create an SSH key for authentication
-resource "azurerm_ssh_key" "example" {
-  name                = "example-ssh-key"
-  public_key          = file("~/.ssh/id_rsa.pub") # path to your SSH public key
-  resource_group_name = azurerm_resource_group.example.name
 }
 
 # Define the virtual machine
@@ -65,9 +73,11 @@ resource "azurerm_linux_virtual_machine" "example" {
   size                = "Standard_B1s"
   admin_username      = "adminuser"
   disable_password_authentication = true
+
+  # Specify the SSH key for authentication
   admin_ssh_key {
     username   = "adminuser"
-    public_key = azurerm_ssh_key.example.public_key
+    public_key = var.ssh_public_key  # Use the variable instead of file()
   }
 
   network_interface_ids = [
@@ -89,6 +99,6 @@ resource "azurerm_linux_virtual_machine" "example" {
 
 # Outputs
 output "vm_public_ip" {
-  value = azurerm_linux_virtual_machine.example.public_ip_address
+  value = azurerm_public_ip.example.ip_address
 }
 
