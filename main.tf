@@ -18,7 +18,7 @@ provider "azurerm" {
   client_secret   = jsondecode(var.azure_credentials)["clientSecret"]
   subscription_id = jsondecode(var.azure_credentials)["subscriptionId"]
   tenant_id       = jsondecode(var.azure_credentials)["tenantId"]
-  
+
   features {}
 }
 
@@ -76,7 +76,6 @@ resource "azurerm_linux_virtual_machine" "example" {
   disable_password_authentication = true
 
   # Specify the SSH key for authentication
-
   admin_ssh_key {
     username   = "adminuser"
     public_key = var.ssh_public_key  # Use the variable instead of file()
