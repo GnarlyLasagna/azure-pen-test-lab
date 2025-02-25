@@ -77,7 +77,7 @@ resource "azurerm_linux_virtual_machine" "example" {
   # Specify the SSH key for authentication
   admin_ssh_key {
     username   = "adminuser"
-    public_key = var.ssh_public_key  # Use the variable instead of file()
+    public_key = file("${path.module}/id_rsa.pub")
   }
 
   network_interface_ids = [
