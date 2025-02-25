@@ -39,10 +39,21 @@ jobs:
       - name: Install jq
         run: sudo apt-get install jq
 
-      # Import existing resource group
+      # Debug the Azure credentials to ensure the subscription ID is extracted
+      - name: Debug Azure Credentials
+        run: |
+          echo "AZURE_CREDENTIALS secret is set!"
+          echo "Extracting Subscription ID..."
+          echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r '.subscriptionId'
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Import Existing Resource Group with debug logging
       - name: Import Existing Resource Group
         run: |
+          echo "Starting Terraform import for resource group..."
           SUBSCRIPTION_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.subscriptionId')
+          echo "Extracted Subscription ID: $SUBSCRIPTION_ID"
           terraform import azurerm_resource_group.example /subscriptions/$SUBSCRIPTION_ID/resourceGroups/example-resources
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
@@ -51,6 +62,7 @@ jobs:
       - name: Terraform Plan
         run: |
           export TF_LOG=DEBUG
+          echo "Running terraform plan..."
           terraform plan -out=tfplan
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}  # Add this line for secret
@@ -58,7 +70,10 @@ jobs:
 
       # Run Terraform Apply
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        run: |
+          export TF_LOG=DEBUG
+          echo "Running terraform apply..."
+          terraform apply -auto-approve tfplan
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}  # Add this line for secret
           TF_VAR_azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}  # Map secret to the variable
