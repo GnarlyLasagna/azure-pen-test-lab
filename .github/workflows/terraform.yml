@@ -1,4 +1,4 @@
-name: Terraform
+iname: Terraform
 
 on:
   push:
@@ -37,9 +37,11 @@ jobs:
 
       # Import existing resource group
       - name: Import Existing Resource Group
-        run: terraform import azurerm_resource_group.example /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/example-resources
+        run: |
+          SUBSCRIPTION_ID=$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r '.subscriptionId')
+          terraform import azurerm_resource_group.example /subscriptions/$SUBSCRIPTION_ID/resourceGroups/example-resources
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}  # Ensure the proper Azure credentials are set
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Run Terraform Plan
       - name: Terraform Plan
