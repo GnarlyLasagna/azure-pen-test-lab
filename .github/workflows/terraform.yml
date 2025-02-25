@@ -35,10 +35,14 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      # Install jq (in case it's not available)
+      - name: Install jq
+        run: sudo apt-get install jq
+
       # Import existing resource group
       - name: Import Existing Resource Group
         run: |
-          SUBSCRIPTION_ID=$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r '.subscriptionId')
+          SUBSCRIPTION_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.subscriptionId')
           terraform import azurerm_resource_group.example /subscriptions/$SUBSCRIPTION_ID/resourceGroups/example-resources
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
