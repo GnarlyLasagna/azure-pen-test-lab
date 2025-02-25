@@ -1,4 +1,4 @@
-name: Terraform
+iname: Terraform
 
 on:
   push:
@@ -35,19 +35,25 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      # Import existing resource group
+      - name: Import Existing Resource Group
+        run: terraform import azurerm_resource_group.example /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/example-resources
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}  # Ensure the proper Azure credentials are set
+
       # Run Terraform Plan
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: |
+          export TF_LOG=DEBUG
+          terraform plan -out=tfplan
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-          TF_VAR_azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
-          TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}  # Add SSH Public Key
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}  # Add this line for secret
+          TF_VAR_azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}  # Map secret to the variable
 
       # Run Terraform Apply
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-          TF_VAR_azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
-          TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}  # Add SSH Public Key
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}  # Add this line for secret
+          TF_VAR_azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}  # Map secret to the variable
 
