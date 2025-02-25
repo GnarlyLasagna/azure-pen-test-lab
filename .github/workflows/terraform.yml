@@ -39,14 +39,14 @@ jobs:
         run: sudo apt-get install jq
 
       # Import existing resource group
-      - name: Import Existing Resource Group
-        run: |
-          export TF_LOG=DEBUG
-          SUBSCRIPTION_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.subscriptionId')
-          echo "Importing resource group with subscription ID: $SUBSCRIPTION_ID"
-          terraform import azurerm_resource_group.example /subscriptions/$SUBSCRIPTION_ID/resourceGroups/example-resources
-        env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      #      - name: Import Existing Resource Group
+        #  run: |
+        #  export TF_LOG=DEBUG
+        #  SUBSCRIPTION_ID=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.subscriptionId')
+        #  echo "Importing resource group with subscription ID: $SUBSCRIPTION_ID"
+        #  terraform import azurerm_resource_group.example /subscriptions/$SUBSCRIPTION_ID/resourceGroups/example-resources
+        # env:
+        #  AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Run Terraform Plan
       - name: Terraform Plan
