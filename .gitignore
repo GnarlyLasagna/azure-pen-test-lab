@@ -1,0 +1,46 @@
+# Node.js dependencies
+/node_modules/
+
+# Terraform files (state files and backups)
+*.tfstate
+*.tfstate.*
+*.backup
+
+# Docker files (you may want to ignore Docker-related files that are specific to your local setup)
+**/docker-compose.override.yml
+**/Dockerfile
+.docker/
+
+# Cloud-init logs
+/var/log/cloud-init-output.log
+/var/log/cloud-init.log
+
+# System files (ignore IDE/editor-specific files)
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Any large or unnecessary files you don't want in the repo
+*.log
+*.bak
+*.tar.gz
+*.zip
+
+# Ignore any compiled binaries or build artifacts
+/build/
+/bin/
+/obj/
+
+# Ignore environment variables (if using .env files)
+.env
+
+# Ignore sensitive files (such as ssh keys or API keys)
+**/*.pem
+**/*.key
+**/*.pub
+
